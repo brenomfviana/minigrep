@@ -8,10 +8,14 @@
 use std::env;
 use std::fs;
 
-/// Gets the arguments and validate them.
-fn get_args() -> (String, String) {
-  // Get arguments
-  let args: Vec<String> = env::args().collect();
+/// Search configuration values.
+struct Config {
+  query: String,
+  filename: String,
+}
+
+/// Gets the arguments, validates them and returns the search configuration.
+fn parse_config(args: &[String]) -> Config {
   // Check if the arguments are valid
   match args.len() {
     0 => panic!("ERROR: How do you did that?"),
@@ -20,17 +24,20 @@ fn get_args() -> (String, String) {
     _ => println!("WARNING: You entered more arguments than the necessary."),
   }
   // Return the tuple of arguments
-  (args[1].clone(), args[2].clone())
+  let (query, filename) = (args[1].clone(), args[2].clone());
+  Config{ query, filename }
 }
 
 fn main() {
-  // Get query key and filename
-  let (query, filename) = get_args();
+  // Get arguments
+  let args: Vec<String> = env::args().collect();
+  // Get the search configuration
+  let config = parse_config(&args);
   // Print arguments
-  println!("Searching for {}", query);
-  println!("In file {}", filename);
+  println!("Searching for {}", config.query);
+  println!("In file {}", config.filename);
   // Read the file
-  let contents = fs::read_to_string(filename)
+  let contents = fs::read_to_string(config.filename)
     .expect("ERROR: Something went wrong reading the file.");
   // Print the file content
   println!("With text:\n{}", contents);
