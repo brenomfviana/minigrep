@@ -7,6 +7,7 @@
 
 use std::env;
 use std::fs;
+use std::process;
 
 /// Search configuration values.
 struct Config {
@@ -16,18 +17,18 @@ struct Config {
 
 impl Config {
   /// Gets the arguments, validates them and returns the search configuration.
-  fn new(args: &[String]) -> Config {
+  fn new(args: &[String]) -> Result<Config, &'static str> {
     // Check if the arguments are valid
     match args.len() {
-      3 => {}, // Right number of arguments
-      0 => panic!("ERROR: How did you do it?"),
-      1 => panic!("ERROR: You did not enter any arguments."),
-      2 => panic!("ERROR: You did not enter the filename."),
+      3 => { /* Right number of arguments. */ },
+      0 => return Err("how did you do it?"),
+      1 => return Err("you did not enter any arguments."),
+      2 => return Err("you did not enter the filename."),
       _ => println!("WARNING: You entered more arguments than the necessary."),
     }
     // Return the search configuration
     let (query, filename) = (args[1].clone(), args[2].clone());
-    Config{ query, filename }
+    Ok(Config{ query, filename })
   }
 }
 
@@ -35,7 +36,10 @@ fn main() {
   // Get arguments
   let args: Vec<String> = env::args().collect();
   // Get the search configuration
-  let config = Config::new(&args);
+  let config = Config::new(&args).unwrap_or_else(|err| {
+    println!("Problem parsing arguments: {}", err);
+    process::exit(1);
+  });
   // Print arguments
   println!("Searching for {}", config.query);
   println!("In file {}", config.filename);
