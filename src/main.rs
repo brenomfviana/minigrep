@@ -32,14 +32,8 @@ impl Config {
   }
 }
 
-fn main() {
-  // Get arguments
-  let args: Vec<String> = env::args().collect();
-  // Get the search configuration
-  let config = Config::new(&args).unwrap_or_else(|err| {
-    println!("Problem parsing arguments: {}", err);
-    process::exit(1);
-  });
+/// Perform file reading and searches for the phrase.
+fn run(config: Config) {
   // Print arguments
   println!("Searching for {}", config.query);
   println!("In file {}", config.filename);
@@ -48,4 +42,16 @@ fn main() {
     .expect("ERROR: Something went wrong reading the file.");
   // Print the file content
   println!("With text:\n{}", contents);
+}
+
+fn main() {
+  // Get arguments
+  let args: Vec<String> = env::args().collect();
+  // Get the search configuration
+  let config = Config::new(&args).unwrap_or_else(|err| {
+    println!("Problem parsing arguments: {}", err);
+    process::exit(1);
+  });
+  // Perform the search
+  run(config);
 }
