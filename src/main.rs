@@ -14,25 +14,27 @@ struct Config {
   filename: String,
 }
 
-/// Gets the arguments, validates them and returns the search configuration.
-fn parse_config(args: &[String]) -> Config {
-  // Check if the arguments are valid
-  match args.len() {
-    0 => panic!("ERROR: How do you did that?"),
-    1 => panic!("ERROR: You did not enter any arguments."),
-    2 => panic!("ERROR: You did not enter the filename."),
-    _ => println!("WARNING: You entered more arguments than the necessary."),
+impl Config {
+  /// Gets the arguments, validates them and returns the search configuration.
+  fn new(args: &[String]) -> Config {
+    // Check if the arguments are valid
+    match args.len() {
+      0 => panic!("ERROR: How did you do it?"),
+      1 => panic!("ERROR: You did not enter any arguments."),
+      2 => panic!("ERROR: You did not enter the filename."),
+      _ => println!("WARNING: You entered more arguments than the necessary."),
+    }
+    // Return the search configuration
+    let (query, filename) = (args[1].clone(), args[2].clone());
+    Config{ query, filename }
   }
-  // Return the tuple of arguments
-  let (query, filename) = (args[1].clone(), args[2].clone());
-  Config{ query, filename }
 }
 
 fn main() {
   // Get arguments
   let args: Vec<String> = env::args().collect();
   // Get the search configuration
-  let config = parse_config(&args);
+  let config = Config::new(&args);
   // Print arguments
   println!("Searching for {}", config.query);
   println!("In file {}", config.filename);
