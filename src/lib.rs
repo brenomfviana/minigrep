@@ -35,8 +35,43 @@ impl Config {
 pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
   // Read the file
   let contents = fs::read_to_string(config.filename)?;
-  // Print the file content
-  println!("With text:\n{}", contents);
+  // Search for the query string in the file and print the found lines
+  for line in search(&config.query, &contents) {
+    println!("{}", line);
+  }
   // Return Ok
   Ok(())
+}
+
+/// Searches for the query string in the file content and returns list of the
+/// found lines.
+pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
+  // Init list of found lines with the query string
+  let mut results = Vec::new();
+  // Look for the lines that contains the query string
+  for line in contents.lines() {
+    if line.contains(query) {
+      results.push(line)
+    }
+  }
+  // Return result
+  results
+}
+
+/// Test module.
+#[cfg(test)]
+mod tests {
+  use super::*;
+
+  #[test]
+  fn one_result() {
+    let query = "duct";
+    let contents = "Rust:\n\
+      safe, fast, productive.\n\
+      Pick three.";
+    assert_eq!(
+      vec!["safe, fast, productive."],
+      search(query, contents)
+    );
+  }
 }
