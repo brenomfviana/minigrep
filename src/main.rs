@@ -6,6 +6,7 @@
 //! the terms of the MIT License.
 
 use std::env;
+use std::error::Error;
 use std::fs;
 use std::process;
 
@@ -24,7 +25,7 @@ impl Config {
       0 => return Err("how did you do it?"),
       1 => return Err("you did not enter any arguments."),
       2 => return Err("you did not enter the filename."),
-      _ => println!("WARNING: You entered more arguments than the necessary."),
+      _ => println!("  WARNING: You have entered more arguments than needed."),
     }
     // Return the search configuration
     let (query, filename) = (args[1].clone(), args[2].clone());
@@ -33,18 +34,17 @@ impl Config {
 }
 
 /// Perform file reading and searches for the phrase.
-fn run(config: Config) {
-  // Print arguments
-  println!("Searching for {}", config.query);
-  println!("In file {}", config.filename);
+fn run(config: Config) -> Result<(), Box<dyn Error>> {
   // Read the file
-  let contents = fs::read_to_string(config.filename)
-    .expect("ERROR: Something went wrong reading the file.");
+  let contents = fs::read_to_string(config.filename)?;
   // Print the file content
   println!("With text:\n{}", contents);
+  // Return Ok
+  Ok(())
 }
 
 fn main() {
+  println!("Minigrep");
   // Get arguments
   let args: Vec<String> = env::args().collect();
   // Get the search configuration
@@ -52,6 +52,12 @@ fn main() {
     println!("Problem parsing arguments: {}", err);
     process::exit(1);
   });
+  // Print search configuration
+  println!("  Searching for: {}.", config.query);
+  println!("  In file: {}.", config.filename);
   // Perform the search
-  run(config);
+  if let Err(e) = run(config) {
+    println!("Application error: {}.", e);
+    process::exit(1);
+  }
 }
