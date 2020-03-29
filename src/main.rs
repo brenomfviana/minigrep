@@ -6,6 +6,7 @@
 //! the terms of the MIT License.
 
 use std::env;
+use std::fs;
 
 /// Gets the arguments and validate them.
 fn get_args() -> (String, String) {
@@ -28,4 +29,9 @@ fn main() {
   // Print arguments
   println!("Searching for {}", query);
   println!("In file {}", filename);
+  // Read the file
+  let contents = fs::read_to_string(filename)
+    .expect("ERROR: Something went wrong reading the file.");
+  // Print the file content
+  println!("With text:\n{}", contents);
 }
