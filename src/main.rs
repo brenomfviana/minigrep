@@ -19,6 +19,7 @@ impl Config {
   fn new(args: &[String]) -> Config {
     // Check if the arguments are valid
     match args.len() {
+      3 => {}, // Right number of arguments
       0 => panic!("ERROR: How did you do it?"),
       1 => panic!("ERROR: You did not enter any arguments."),
       2 => panic!("ERROR: You did not enter the filename."),
