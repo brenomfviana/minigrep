@@ -18,6 +18,8 @@ fn main() {
     println!("Problem parsing arguments: {}", err);
     process::exit(1);
   });
+  println!("  Set any value to CASE_INSENSITIVE environment variable to use \
+    case insensitive search.");
   // Perform the search
   if let Err(e) = minigrep::run(config) {
     println!("Application error: {}.", e);
