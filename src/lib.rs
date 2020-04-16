@@ -45,16 +45,7 @@ impl Config {
 /// Searches for the query string in the file content and returns list of the
 /// found lines.
 pub fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
-  // Init list of found lines with the query string
-  let mut results = Vec::new();
-  // Look for the lines that contains the query string
-  for line in contents.lines() {
-    if line.contains(query) {
-      results.push(line)
-    }
-  }
-  // Return result
-  results
+  contents.lines().filter(|line| line.contains(query)).collect()
 }
 
 /// Converts all characters to lowercase, searches for the query string in the
