@@ -18,18 +18,26 @@ pub struct Config {
 
 impl Config {
   /// Gets the arguments, validates them and returns the search configuration.
-  pub fn new(args: &[String]) -> Result<Config, &'static str> {
-    // Check if the arguments are valid
-    match args.len() {
-      3 => { /* Right number of arguments. */ },
-      0 => return Err("how did you do it?"),
-      1 => return Err("you did not enter any arguments."),
-      2 => return Err("you did not enter the filename."),
-      _ => println!("  WARNING: You have entered more arguments than needed."),
+  pub fn new(mut args: std::env::Args) -> Result<Config, &'static str> {
+    // Skip program call
+    args.next();
+    // Get query string from arguments
+    let query = match args.next() {
+      Some(arg) => arg,
+      None => return Err("you did not enter a string."),
+    };
+    // Get query filename from arguments
+    let filename = match args.next() {
+      Some(arg) => arg,
+      None => return Err("you did not enter the filename"),
+    };
+    // Check if the case insensitive variable is active
+    let case_sensitive = env::var("CASE_INSENSITIVE").is_err();
+    // Check if there are still arguments
+    if let Some(_) = args.next() {
+      println!("  WARNING: You have entered more arguments than needed.");
     }
     // Return the search configuration
-    let (query, filename, case_sensitive) =
-      (args[1].clone(), args[2].clone(), env::var("CASE_INSENSITIVE").is_err());
     Ok(Config{ query, filename, case_sensitive })
   }
 }
